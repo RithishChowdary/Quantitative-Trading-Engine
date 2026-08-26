@@ -1,19 +1,23 @@
 package com.rithish.trading.config;
 
-public class ApiConfig {
+import lombok.Getter;
 
-    private static final String API_KEY =
-            "sk-live-sCjayOMqUtyfhqSLDBELe5icX7xRgrGAfaIHzpNb";
+@Getter
+public final class ApiConfig {
 
-    private static final String BASE_URL =
-            "https://stock.indianapi.in";
+    private final String apiKey;
+    private final String baseUrl;
 
-    public static String getApiKey() {
-        return API_KEY;
+    public ApiConfig(String apiKey, String baseUrl) {
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new IllegalArgumentException("API key must not be empty");
+        }
+
+        if (baseUrl == null || baseUrl.isBlank()) {
+            throw new IllegalArgumentException("Base URL must not be empty");
+        }
+
+        this.apiKey = apiKey;
+        this.baseUrl = baseUrl;
     }
-
-    public static String getBaseUrl() {
-        return BASE_URL;
-    }
-
 }

@@ -1,16 +1,17 @@
 package com.rithish.trading.dto.api;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.List;
-
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Dataset {
 
-    private String metric;
-
-    private String label;
-
-    private List<List<Object>> values;
-
+    private String symbol;
+    private String exchange;
+    private String interval;
 }

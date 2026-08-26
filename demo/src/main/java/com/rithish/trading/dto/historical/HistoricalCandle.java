@@ -1,24 +1,22 @@
 package com.rithish.trading.dto.historical;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoricalCandle {
 
-    private String date;
-
+    private LocalDateTime timestamp;
     private double open;
-
     private double high;
-
     private double low;
-
     private double close;
-
-    private long volume;
-
+    private double volume;
 }

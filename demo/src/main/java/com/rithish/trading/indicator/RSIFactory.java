@@ -1,18 +1,21 @@
 package com.rithish.trading.indicator;
 
+import com.rithish.trading.contracts.IndicatorFactory;
+import org.ta4j.core.Indicator;
 import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
+import org.ta4j.core.num.Num;
 
-import com.rithish.trading.contracts.IndicatorFactory;
+public class RSIFactory implements IndicatorFactory {
 
-public class RSIFactory implements IndicatorFactory{
-
-    public RSIIndicator create(ClosePriceIndicator closePrice,
-                               int period) {
+    @Override
+    public Indicator<Num> create(
+            ClosePriceIndicator closePrice,
+            int period) {
 
         return new RSIIndicator(
                 closePrice,
-                period);
+                period
+        );
     }
-
 }

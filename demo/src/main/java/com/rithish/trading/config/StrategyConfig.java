@@ -1,30 +1,92 @@
 package com.rithish.trading.config;
 
-public class StrategyConfig {
+import lombok.Getter;
 
-    private final int fastEma = 9;
-    private final int slowEma = 26;
-    private final int rsiPeriod = 14;
-    private final int rsiBuy = 45;
-    private final int rsiSell = 55;
+/**
+ * Immutable configuration for a trading strategy.
+ *
+ * <p>The RSI thresholds are used as momentum boundaries:</p>
+ * <ul>
+ *     <li>Buy when RSI is above the buy threshold.</li>
+ *     <li>Exit when RSI falls below the sell threshold.</li>
+ * </ul>
+ */
+@Getter
+public final class StrategyConfig {
 
-    public int getFastEma() {
-        return fastEma;
+    private final int fastEmaPeriod;
+    private final int slowEmaPeriod;
+    private final int rsiPeriod;
+    private final double rsiBuyThreshold;
+    private final double rsiSellThreshold;
+
+    public StrategyConfig(
+            int fastEmaPeriod,
+            int slowEmaPeriod,
+            int rsiPeriod,
+            double rsiBuyThreshold,
+            double rsiSellThreshold) {
+
+        validate(
+                fastEmaPeriod,
+                slowEmaPeriod,
+                rsiPeriod,
+                rsiBuyThreshold,
+                rsiSellThreshold
+        );
+
+        this.fastEmaPeriod = fastEmaPeriod;
+        this.slowEmaPeriod = slowEmaPeriod;
+        this.rsiPeriod = rsiPeriod;
+        this.rsiBuyThreshold = rsiBuyThreshold;
+        this.rsiSellThreshold = rsiSellThreshold;
     }
 
-    public int getSlowEma() {
-        return slowEma;
-    }
+    private void validate(
+            int fastEmaPeriod,
+            int slowEmaPeriod,
+            int rsiPeriod,
+            double rsiBuyThreshold,
+            double rsiSellThreshold) {
 
-    public int getRsiPeriod() {
-        return rsiPeriod;
-    }
+        if (fastEmaPeriod <= 0) {
+            throw new IllegalArgumentException(
+                    "Fast EMA period must be greater than zero"
+            );
+        }
 
-    public int getRsiBuy() {
-        return rsiBuy;
-    }
+        if (slowEmaPeriod <= fastEmaPeriod) {
+            throw new IllegalArgumentException(
+                    "Slow EMA period must be greater than fast EMA period"
+            );
+        }
 
-    public int getRsiSell() {
-        return rsiSell;
+        if (rsiPeriod <= 0) {
+            throw new IllegalArgumentException(
+                    "RSI period must be greater than zero"
+            );
+        }
+
+        if (!Double.isFinite(rsiBuyThreshold)
+                || rsiBuyThreshold < 0
+                || rsiBuyThreshold > 100) {
+            throw new IllegalArgumentException(
+                    "RSI buy threshold must be between 0 and 100"
+            );
+        }
+
+        if (!Double.isFinite(rsiSellThreshold)
+                || rsiSellThreshold < 0
+                || rsiSellThreshold > 100) {
+            throw new IllegalArgumentException(
+                    "RSI sell threshold must be between 0 and 100"
+            );
+        }
+
+        if (rsiBuyThreshold <= rsiSellThreshold) {
+            throw new IllegalArgumentException(
+                    "RSI buy threshold must be greater than RSI sell threshold"
+            );
+        }
     }
 }

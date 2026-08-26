@@ -1,80 +1,119 @@
 package com.rithish.trading.strategy;
 
-import com.rithish.trading.config.StrategyConfig;
-import com.rithish.trading.contracts.StrategyFactory;
-import com.rithish.trading.indicator.EMAFactory;
-import com.rithish.trading.indicator.RSIFactory;
+import java.util.Objects;
 
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.BaseStrategy;
-import org.ta4j.core.Rule;
 import org.ta4j.core.Strategy;
-
 import org.ta4j.core.indicators.RSIIndicator;
 import org.ta4j.core.indicators.averages.EMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
-
 import org.ta4j.core.rules.CrossedDownIndicatorRule;
 import org.ta4j.core.rules.CrossedUpIndicatorRule;
 import org.ta4j.core.rules.OverIndicatorRule;
 import org.ta4j.core.rules.UnderIndicatorRule;
 
+import com.rithish.trading.config.StrategyConfig;
+import com.rithish.trading.contracts.StrategyFactory;
+import com.rithish.trading.indicator.IndicatorRegistry;
+import com.rithish.trading.model.IndicatorType;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Builds the EMA + RSI momentum strategy.
+ *
+ * <p>Entry:</p>
+ * <ul>
+ *     <li>Fast EMA crosses above slow EMA.</li>
+ *     <li>RSI is above the buy threshold.</li>
+ * </ul>
+ *
+ * <p>Exit:</p>
+ * <ul>
+ *     <li>Fast EMA crosses below slow EMA, OR</li>
+ *     <li>RSI falls below the sell threshold.</li>
+ * </ul>
+ */
+@RequiredArgsConstructor
 public class EmaRsiStrategyFactory implements StrategyFactory {
 
+    private final IndicatorRegistry indicatorRegistry;
+
     @Override
-    public Strategy create(BarSeries series) {
+    public Strategy create(
+            BarSeries series,
+            StrategyConfig config) {
 
-        // Configuration
-        StrategyConfig config = new StrategyConfig();
+        Objects.requireNonNull(series, "BarSeries must not be null");
+        Objects.requireNonNull(config, "StrategyConfig must not be null");
 
-        // Close Price Indicator
+        int minimumBars = Math.max(
+                config.getSlowEmaPeriod(),
+                config.getRsiPeriod()
+        ) + 1;
+
+        if (series.getBarCount() < minimumBars) {
+            throw new IllegalArgumentException(
+                    "Not enough bars to build EMA + RSI strategy. "
+                            + "Required at least " + minimumBars
+                            + ", found " + series.getBarCount()
+            );
+        }
+
         ClosePriceIndicator closePrice =
                 new ClosePriceIndicator(series);
 
-        // Indicator Factories
-        EMAFactory emaFactory = new EMAFactory();
-        RSIFactory rsiFactory = new RSIFactory();
+        EMAIndicator fastEma =
+                (EMAIndicator) indicatorRegistry
+                        .getFactory(IndicatorType.EMA)
+                        .create(
+                                closePrice,
+                                config.getFastEmaPeriod()
+                        );
 
-        // EMA Indicators
-        EMAIndicator emaFast =
-                emaFactory.create(
-                        closePrice,
-                        config.getFastEma());
+        EMAIndicator slowEma =
+                (EMAIndicator) indicatorRegistry
+                        .getFactory(IndicatorType.EMA)
+                        .create(
+                                closePrice,
+                                config.getSlowEmaPeriod()
+                        );
 
-        EMAIndicator emaSlow =
-                emaFactory.create(
-                        closePrice,
-                        config.getSlowEma());
-
-        // RSI Indicator
         RSIIndicator rsi =
-                rsiFactory.create(
-                        closePrice,
-                        config.getRsiPeriod());
+                (RSIIndicator) indicatorRegistry
+                        .getFactory(IndicatorType.RSI)
+                        .create(
+                                closePrice,
+                                config.getRsiPeriod()
+                        );
 
-        // Buy Rule
-        Rule buyRule =
+        var entryRule =
                 new CrossedUpIndicatorRule(
-                        emaFast,
-                        emaSlow)
-                        .and(
-                                new OverIndicatorRule(
-                                        rsi,
-                                        config.getRsiBuy()));
+                        fastEma,
+                        slowEma
+                ).and(
+                        new OverIndicatorRule(
+                                rsi,
+                                config.getRsiBuyThreshold()
+                        )
+                );
 
-        // Sell Rule
-        Rule sellRule =
+        var exitRule =
                 new CrossedDownIndicatorRule(
-                        emaFast,
-                        emaSlow)
-                        .or(
-                                new UnderIndicatorRule(
-                                        rsi,
-                                        config.getRsiSell()));
+                        fastEma,
+                        slowEma
+                ).or(
+                        new UnderIndicatorRule(
+                                rsi,
+                                config.getRsiSellThreshold()
+                        )
+                );
 
-        // Return Strategy
         return new BaseStrategy(
-                buyRule,
-                sellRule);
+                "EMA_RSI",
+                entryRule,
+                exitRule
+        );
     }
 }

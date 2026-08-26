@@ -1,4 +1,4 @@
-package com.rithish.optimizer;
+package com.rithish.trading.optimizer;
 
 public interface StrategyOptimizer {
 
