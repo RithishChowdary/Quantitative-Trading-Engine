@@ -422,16 +422,104 @@ Performs walk-forward optimization across sliding training and testing windows t
 
 ## 🔮 Future Enhancements
 
-### Implemented Features
-* Dynamic parameter grid-search optimizer.
-* Walk-forward out-of-sample window tester.
-* Fallback market data loading strategy (Web REST Client API $\rightarrow$ Local CSV File).
-* Multi-strategy comparator utilizing risk-adjusted priorities.
-* Thread-safe modular indicator/strategy registries.
+---
 
-### Planned Enhancements
-* **Database Integration**: Add persistence using PostgreSQL or MongoDB to cache downloaded API candle series, saving API quota limits.
-* **Support for Intraday Data**: Expand the parser to support custom minute intervals (1m, 5m, 15m, 1h) in addition to the standard daily chart interval.
-* **Dynamic Walk-Forward Configurations**: Accept window sizes and slide steps in the REST request body instead of hardcoding them in the service constructor.
-* **Advanced Technical Indicators**: Implement factories for MACD, Bollinger Bands, ATR, and Stochastic Oscillators.
-* **Interactive Frontend Dashboards**: Develop a web interface using React/Vite to visualize trade entries/exits and render performance equity curves.
+## 🔗 Integration with Real-Time Stock Portfolio
+
+This Quantitative Trading Engine is designed as a standalone quantitative analysis and backtesting module and is being integrated into a separate **Real-Time Stock Portfolio** application.
+
+The integration allows users to select a stock symbol from the stocks available in the portfolio platform and request quantitative analysis for that selected stock.
+
+### Integration Flow
+
+```text
+Real-Time Stock Portfolio
+            │
+            ▼
+     User selects stock
+       (e.g. TCS)
+            │
+            ▼
+   Quantitative Analysis API
+            │
+            ▼
+     Historical OHLCV Data
+            │
+       ┌────┴─────┐
+       │          │
+       ▼          ▼
+   API Data    CSV Data
+       │          │
+       └────┬─────┘
+            ▼
+      TA4J BarSeries
+            │
+            ▼
+       Backtest Engine
+            │
+       ┌────┼──────────────┐
+       ▼    ▼              ▼
+   Strategy  Parameter   Walk-Forward
+   Testing   Optimization Optimization
+       │        │              │
+       └────────┼──────────────┘
+                ▼
+       Performance Metrics
+                │
+                ▼
+       Quantitative Result
+                │
+                ▼
+     Real-Time Stock Portfolio
+
+```
+Planned Application-Level Integration
+
+The Real-Time Stock Portfolio application manages the user-facing stock and portfolio functionality, while this engine provides quantitative analysis capabilities.
+
+The integration is designed around the following responsibilities:
+
+Real-Time Stock Portfolio
+User authentication and authorization
+Stock catalogue managed by administrators
+Current market prices
+Portfolio and holdings
+Transactions
+Alerts and notifications
+User-facing dashboard
+Quantitative Trading Engine
+Historical market-data processing
+Technical indicators
+Strategy execution
+Backtesting
+Parameter optimization
+Walk-forward validation
+Performance analysis
+
+The stock symbol selected by the user will be validated against the stocks available in the portfolio application before quantitative analysis is executed.
+
+Future AI Integration
+
+A future AI layer will consume the quantitative results and market information to provide higher-level analysis.
+
+```text
+Stock Selection
+      ↓
+Historical Market Data
+      ↓
+Quantitative Engine
+      ↓
+Backtesting + Optimization
+      ↓
+Risk & Performance Metrics
+      ↓
+AI Analysis Layer
+      ↓
+Explainable Market Insight
+```
+
+The AI component is intended to interpret quantitative results rather than replace the underlying quantitative calculations.
+
+```markdown
+* **Real-Time Stock Portfolio Integration**: Integrate the quantitative engine with the Real-Time Stock Portfolio platform so users can select administrator-approved stocks and perform quantitative backtesting directly from the portfolio application.
+* **AI-Powered Quantitative Analysis**: Add an AI layer that interprets quantitative backtesting, optimization, risk, and market metrics to generate explainable insights for selected stocks.
