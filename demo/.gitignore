@@ -64,3 +64,10 @@ secret*
 spotbugs/
 
 effective-pom.xml
+
+# Allow sample NSE historical datasets
+!src/main/resources/historical/
+!src/main/resources/historical/NSE/
+!src/main/resources/historical/NSE/TCS.csv
+!src/main/resources/historical/NSE/INFOSYS.csv
+
