@@ -584,7 +584,7 @@ The AI component is intended to interpret quantitative results rather than repla
 ```markdown
 * **Real-Time Stock Portfolio Integration**: Integrate the quantitative engine with the Real-Time Stock Portfolio platform so users can select administrator-approved stocks and perform quantitative backtesting directly from the portfolio application.
 * **AI-Powered Quantitative Analysis**: Add an AI layer that interprets quantitative backtesting, optimization, risk, and market metrics to generate explainable insights for selected stocks.
-
+```
 ---
 
 ## Disclaimer
