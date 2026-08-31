@@ -258,6 +258,67 @@ The `MultiStrategyComparator` evaluates multiple strategies concurrently on the 
 4. **Maximum Drawdown** (Lowest Drawdown is preferred)
 
 ---
+---
+
+## Error Handling
+
+`GlobalExceptionHandler` (`@RestControllerAdvice`) maps exceptions to consistent payloads.
+
+| Exception | Status | `error` |
+| --- | --- | --- |
+| `IllegalArgumentException` | `400 Bad Request` | `Bad Request` |
+| `HistoricalDataDownloadException` | `404 Not Found` | `Historical Data Not Found` |
+| `BacktestExecutionException` | `500 Internal Server Error` | `Backtest Execution Failed` |
+| `Exception` (catch-all) | `500 Internal Server Error` | `Internal Server Error` |
+
+```json
+{
+  "timestamp": "2026-08-31T12:26:04.118",
+  "status": 404,
+  "error": "Historical Data Not Found",
+  "message": "Historical data not available for FOO on NSE or BSE",
+  "path": "/api/backtest"
+}
+```
+
+The catch-all returns a generic message so internal details are never leaked to clients, while the full stack trace is logged server-side.
+
+---
+---
+
+## Testing
+
+**96 tests across 17 classes, all passing.**
+
+```bash
+cd Quantitative-Trading-Engine/demo && mvn test
+```
+
+| Test class | Tests | Covers |
+| --- | --- | --- |
+| `StrategyConfigTest` | 14 | Every validation invariant and boundary |
+| `WalkForwardOptimizerTest` | 12 | Window arithmetic, insufficient-data guards, profit aggregation |
+| `AlphaVantageHistoricalDataDownloaderTest` | 8 | Exchange fallback, rate-limit detection, malformed JSON |
+| `ApiMarketDataLoaderTest` | 8 | Symbol normalization, empty responses, series construction |
+| `FallbackMarketDataLoaderTest` | 8 | API → CSV degradation and both-failed paths |
+| `CsvMarketDataLoaderTest` | 6 | Malformed rows, duplicate dates, ordering, OHLC validation |
+| `PerformanceMetricsCalculatorTest` | 6 | Win rate, profit factor, zero-trade and no-loss edge cases |
+| `BacktestEngineTest` | 5 | Null/empty validation, execution, exception wrapping |
+| `EmaRsiStrategyFactoryTest` | 5 | Rule construction and warm-up guards |
+| `ParameterOptimizerTest` | 5 | Grid traversal, invalid-combination skipping, best-config selection |
+| `MultiStrategyComparatorTest` | 4 | Risk-aware ranking priority |
+| `PerformanceReportServiceTest` | 4 | Report formatting |
+| `TradeReportServiceTest` | 4 | Trade detail and open-position output |
+| `IndicatorRegistryTest` | 3 | Lookup and unknown-type failure |
+| `StrategyRegistryTest` | 2 | Lookup and unknown-type failure |
+| `HistoricalDataServiceTest` | 1 | API key propagation |
+| `StrategyEngineSmokeTest` | 1 | End-to-end CSV → strategy → engine signal generation |
+
+External HTTP is mocked with Mockito at the `AlphaVantageClient` boundary, so the suite runs offline and without consuming API quota.
+
+> **Note:** `CsvMarketDataLoaderTest` and `StrategyEngineSmokeTest` read CSV fixtures from `demo/src/main/resources/historical/NSE/`. See [Known Limitations](#known-limitations) — these files are currently excluded by `.gitignore`.
+
+---
 
 ## 🛠️ Technology Stack & Dependencies
 
@@ -523,3 +584,25 @@ The AI component is intended to interpret quantitative results rather than repla
 ```markdown
 * **Real-Time Stock Portfolio Integration**: Integrate the quantitative engine with the Real-Time Stock Portfolio platform so users can select administrator-approved stocks and perform quantitative backtesting directly from the portfolio application.
 * **AI-Powered Quantitative Analysis**: Add an AI layer that interprets quantitative backtesting, optimization, risk, and market metrics to generate explainable insights for selected stocks.
+
+---
+
+## Disclaimer
+
+This project is built for **research and educational purposes**. It is not investment advice, and it is not a live trading system.
+
+Backtested performance does not predict future results. The engine models neither transaction costs nor market impact, and walk-forward validation reduces — but does not eliminate — overfitting risk. Do not trade real capital on these results without independent validation.
+
+---
+
+## License
+
+No license file is currently included in this repository, which means the code is All Rights Reserved by default. Adding a `LICENSE` file — MIT or Apache-2.0 are the usual choices for a project like this — is recommended if you intend others to use or contribute to it.
+
+---
+
+## Author
+
+**Rithish Chowdary** — [github.com/RithishChowdary](https://github.com/RithishChowdary)
+
+If this project is useful to you, a ⭐ on the repository is appreciated.
