@@ -321,15 +321,18 @@ External HTTP is mocked with Mockito at the `AlphaVantageClient` boundary, so th
 
 ## 🛠️ Technology Stack & Dependencies
 
-The project is built on the following stack (defined in [pom.xml](file:///c:/Users/LENOVO%20CORE%20I7/Downloads/Quantitative-Trading-Engine-main%20%281%29/Quantitative-Trading-Engine-main/demo/pom.xml)):
-* **Language/Platform**: Java 21 (properties set to version 21)
-* **Framework**: Spring Boot 3.5.6 (with Web starter)
-* **Core Libraries**:
-  * `ta4j-core` (v0.18) - Technical Analysis and Backtesting Engine
-  * `jackson-databind` - JSON Serialization/Deserialization
-  * `lombok` - Boilerplate generation (Getter, RequiredArgsConstructor, etc.)
-  * `spring-webflux` - Integration testing client runtime support
-* **Testing Suite**: Spring Boot Starter Test (JUnit 5, Mockito)
+---
+
+| Layer | Technology |
+| --- | --- |
+| Language | Java 21 |
+| Framework | Spring Boot 3.5.6 (`spring-boot-starter-web`) |
+| Technical analysis | ta4j-core 0.18 |
+| HTTP client | Spring `RestClient` |
+| JSON | Jackson Databind |
+| Boilerplate reduction | Lombok |
+| Testing | JUnit 5, Mockito, `spring-boot-starter-test` |
+| Build | Maven (`spring-boot-maven-plugin`) |
 
 ---
 
