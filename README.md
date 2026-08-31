@@ -4,7 +4,6 @@
 [![Java Version](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/technologies/downloads/#java21)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-blue.svg)](https://spring.io/projects/spring-boot)
 [![Trading Library](https://img.shields.io/badge/TA4J-0.18-blueviolet.svg)](https://github.com/ta4j/ta4j)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](#) 
 
 A high-performance, robust, and clean-architecture quantitative trading strategy development, backtesting, and parameter optimization engine. Built with **Spring Boot 3.5.6**, **Java 21**, and the **TA4J** technical analysis library, this application provides an enterprise-ready environment for designing mechanical trading strategies, optimizing parameters across historical datasets, and performing walk-forward out-of-sample validations.
 
