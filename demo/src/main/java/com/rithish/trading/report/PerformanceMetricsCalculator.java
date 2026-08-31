@@ -2,11 +2,11 @@ package com.rithish.trading.report;
 
 import java.util.Objects;
 
+import org.springframework.stereotype.Component;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.Position;
 import org.ta4j.core.TradingRecord;
 import org.ta4j.core.criteria.MaximumDrawdownCriterion;
-import org.ta4j.core.criteria.pnl.ProfitLossRatioCriterion;
 
 /**
  * Calculates quantitative performance metrics from a backtest result.
@@ -14,6 +14,7 @@ import org.ta4j.core.criteria.pnl.ProfitLossRatioCriterion;
  * Calculation logic is kept outside PerformanceMetrics so that the
  * metrics object remains a simple data holder.
  */
+@Component
 public class PerformanceMetricsCalculator {
 
     public PerformanceMetrics calculate(

@@ -18,6 +18,7 @@ import org.ta4j.core.BaseBarSeriesBuilder;
 
 import com.rithish.trading.contracts.MarketDataLoader;
 import com.rithish.trading.dto.historical.HistoricalCandle;
+import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  * <p>Malformed/event rows are skipped so raw market-data exports containing
  * dividend or corporate-action rows do not break the backtest.</p>
  */
+@Component
 @Slf4j
 public class CsvMarketDataLoader implements MarketDataLoader {
 

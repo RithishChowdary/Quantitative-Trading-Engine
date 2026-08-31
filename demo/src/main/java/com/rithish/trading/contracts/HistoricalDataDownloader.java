@@ -6,7 +6,7 @@ public interface HistoricalDataDownloader {
 
     HistoricalResponse download(
             String symbol,
-            String period,
+            String interval,
             String apiKey
     );
 }

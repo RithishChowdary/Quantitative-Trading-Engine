@@ -19,9 +19,16 @@ public class StrategyRegistry {
 
         this.registry = new EnumMap<>(StrategyType.class);
 
+       registry.put(
+        StrategyType.EMA_RSI,
+        new EmaRsiStrategyFactory(
+                indicatorRegistry
+        )
+);
+
         registry.put(
-                StrategyType.EMA_RSI,
-                new EmaRsiStrategyFactory(
+                StrategyType.EMA_CROSSOVER,
+                new EmaCrossoverStrategyFactory(
                         indicatorRegistry
                 )
         );

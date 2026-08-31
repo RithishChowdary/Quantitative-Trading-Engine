@@ -63,25 +63,25 @@ public class PerformanceReportService {
                 metrics.getWinRate() * 100
         );
 
-       System.out.printf(
-        "Total Profit      : %.2f%n",
-        metrics.getTotalProfit()
-);
+              System.out.printf(
+                "Total Profit      : %.2f%n",
+                metrics.getTotalProfit()
+        );
 
-System.out.printf(
-        "Total Loss        : %.2f%n",
-        metrics.getTotalLoss()
-);
+        System.out.printf(
+                "Total Loss        : %.2f%n",
+                metrics.getTotalLoss()
+        );
 
-System.out.printf(
-        "Total Earnings    : %.2f%n",
-        metrics.getTotalEarnings()
-);
+        System.out.printf(
+                "Total Earnings    : %.2f%n",
+                metrics.getTotalEarnings()
+        );
 
-System.out.printf(
-        "Average Profit    : %.2f%n",
-        metrics.getAverageProfit()
-);
+        System.out.printf(
+                "Average Profit    : %.2f%n",
+                metrics.getAverageProfit()
+        );
 
         System.out.printf(
                 "Maximum Drawdown  : %.2f%n",

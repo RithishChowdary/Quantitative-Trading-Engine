@@ -1,9 +1,12 @@
 package com.rithish.trading.service.impl;
 
+import com.rithish.trading.config.AlphaVantageProperties;
 import com.rithish.trading.contracts.HistoricalDataDownloader;
 import com.rithish.trading.dto.api.HistoricalResponse;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,22 +15,22 @@ import org.springframework.stereotype.Service;
 public class HistoricalDataService {
 
     private final HistoricalDataDownloader downloader;
+    private final AlphaVantageProperties alphaVantageProperties;
 
-    public HistoricalResponse downloadHistoricalData(
-            String symbol,
-            String period,
-            String apiKey) {
+        public HistoricalResponse downloadHistoricalData(
+                String symbol,
+                String interval) {
 
         log.info(
-                "Requesting historical data for symbol: {}, period: {}",
+                "Requesting historical data for symbol: {}, interval: {}",
                 symbol,
-                period
+                interval
         );
 
         return downloader.download(
                 symbol,
-                period,
-                apiKey
+                interval,
+                alphaVantageProperties.getApiKey()
         );
-    }
+        }
 }
